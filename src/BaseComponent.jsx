@@ -13,9 +13,9 @@ export default class BaseComponent extends React.Component
     throw 'You must implements initStore().';
   }
 
-  onStoreChange(){
+  onStoreChange(callback){
     if(this._isMounted){
-      this.setState(this.store.getState());
+      this.setState(this.store.getState(), callback);
     }
   }
 
