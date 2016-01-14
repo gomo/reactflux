@@ -1,34 +1,24 @@
-import React from 'react';
-
 export default class BaseComponent extends React.Component
 {
   constructor(props) {
     super(props);
-    this._isMounted = false;
     this.store = this.initStore();
-    this.state = this.store.getState();
+    this.state = this.store.getInitialState();
+
+    this.storeChangeCallback = (callback) => {
+      this.setState(this.store.getUpdatedState(), callback);
+    };
   }
 
   initStore(){
     throw 'You must implements initStore().';
   }
 
-  onStoreChange(callback){
-    if(this._isMounted){
-      this.setState(this.store.getState(), callback);
-    }
-  }
-
   componentWillMount() {
-    this.store.addChangeListener(this.onStoreChange.bind(this));
-  }
-
-  componentDidMount(){
-    this._isMounted = true;
+    this.store.addChangeListener(this.storeChangeCallback);
   }
 
   componentWillUnmount() {
-    this._isMounted = false;
-    this.store.removeChangeListener(this.onStoreChange.bind(this));
+    this.store.removeChangeListener(this.storeChangeCallback);
   }
 }
