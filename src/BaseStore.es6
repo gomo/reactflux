@@ -1,15 +1,16 @@
+import Events from 'events';
+
 export default class BaseStore extends Events.EventEmitter
 {
   constructor(dispatcher, defaultState = {}) {
     super();
     this.dispatchToken = dispatcher.register((payload) => {
-      if(!payload.type){
-        throw 'Missing event type.';
+      if(!payload.handler){
+        throw 'Missing event handler.';
       }
 
-      var methodName = 'handle' + payload.type;
-      if(this[methodName]){
-        var ret = this[methodName].call(this, payload);
+      if(this[payload.handler]){
+        var ret = this[payload.handler].call(this, payload);
         if(ret !== false){
           var foo = this.emit('change', payload.callback);
         }
