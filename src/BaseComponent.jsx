@@ -8,7 +8,7 @@ export default class BaseComponent extends React.Component
     this.state = this.store.getInitialState();
 
     this.storeChangeCallback = (callback) => {
-      this.setState(this.store.getUpdatedState(), callback);
+      this.setState(this.store.bindUpdatedState(), callback);
     };
   }
 

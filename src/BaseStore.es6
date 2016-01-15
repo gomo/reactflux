@@ -68,11 +68,11 @@ export default class BaseStore extends Events.EventEmitter
     return state;
   }
 
-  getUpdatedState(){
+  bindUpdatedState(){
     for(var key in this.updatedState){
       this.state[key] = this.updatedState[key];
     }
-    var updated = this.updatedState;
-    return updated;
+
+    return this.updatedState;
   }
 }
