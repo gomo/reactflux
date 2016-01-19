@@ -29,7 +29,14 @@ gulp.task('webserver', function() {
   gulp.src('example/todo/public')
     .pipe(webserver({
       host: 'localhost',
-      port: '9999'
+      port: '9999',
+      middleware: function(req, res, next) {
+        var routerName = './gulp/router';
+        delete require.cache[require.resolve(routerName)];
+
+        var router = require(routerName);
+        router.route(req, res, next);
+      }
     }));
 });
 
