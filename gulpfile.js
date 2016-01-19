@@ -56,7 +56,7 @@ gulp.task('build-example', function() {
 });
 
 gulp.task('watch-example', function() {
-  gulp.watch(['example/todo/src/*', 'example/todo/src/**/*'], ['build-example']);
+  gulp.watch(['example/todo/src/*', 'example/todo/src/**/*', 'src/*'], ['build-src', 'build-example']);
 });
 
 gulp.task('example', ['watch-example', 'webserver']);
