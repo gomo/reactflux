@@ -12,7 +12,7 @@ npm install --save-dev reactflux
 
 ## How to use
 
-Check [sample TODO application](tree/example/todo).
+Check [sample TODO application](example/todo).
 
 ### Component
 
