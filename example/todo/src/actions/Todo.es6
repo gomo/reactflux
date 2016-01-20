@@ -8,12 +8,8 @@ class TodoActions extends ReactFlux.BaseActions
     super(Dispatcher);
   }
 
-  loadData(){
-    $.ajax({
-      'url': '/todo/list'
-    }).done((data) => {
-      this.dispatch(TodoConst.ActionTypes.BIND_TODO_LIST, data);
-    });
+  updateTitle(value){
+    this.dispatch(TodoConst.ActionTypes.BIND_TODO_TITLE, {title: value});
   }
 }
 

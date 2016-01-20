@@ -38,10 +38,10 @@ var Controllers = {
         data = JSON.parse(data);
         var item = post;
         item['id'] = data.list.length + 1;
-        data.list.push(item);
+        data.list.unshift(item);
         var stringData = JSON.stringify(data);
         saveTodoData(stringData, function(){
-          res.write(stringData, 'utf8', function(){
+          res.write(JSON.stringify(item), 'utf8', function(){
             callback();
           });
         });

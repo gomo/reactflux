@@ -5,12 +5,30 @@ class TodoStore extends ReactFlux.BaseStore
 {
   constructor() {
     super(Dispatcher, {
-      'list': []
+      'loading': false,
+      'missingTitle': false,
+      'title': ''
     });
   }
 
-  handleBindTodoList(payload){
-    this.setState({'list': payload.data.list});
+  handleShowLoading(payload){
+    this.setState({'loading': true});
+  }
+
+  handleHideLoading(payload){
+    this.setState({'loading': false});
+  }
+
+  handleShowMissingTitleError(payload){
+    this.setState({'missingTitle': true});
+  }
+
+  handleHideMissingTitleError(payload){
+    this.setState({'missingTitle': false});
+  }
+
+  handleBindTodoTitle(payload){
+    this.setState({'title': payload.data.title});
   }
 }
 

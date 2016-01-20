@@ -2,6 +2,10 @@ import React from 'react';
 import ReactFlux from '../../../../';
 import TodoStore from '../stores/Todo';
 import TodoActions from '../actions/Todo';
+import TodoListActions from '../actions/TodoList';
+import TodoList from './TodoList';
+import classNames from 'classnames';
+
 
 export default class Todo extends ReactFlux.BaseComponent
 {
@@ -14,26 +18,42 @@ export default class Todo extends ReactFlux.BaseComponent
   }
 
   componentDidMount(){
-    TodoActions.loadData();
+    TodoListActions.loadData();
+  }
+
+  onClickAddTodo(e){
+    TodoListActions.add(TodoStore.getState('title'));
+  }
+
+  onChangeTitle(e){
+    TodoActions.updateTitle(e.target.value);
   }
 
   render(){
+    var loadingClass = classNames({
+      'loading': true,
+      'pull-right': true,
+      'hidden': !this.state.loading
+    });
+
+    var inputWrapperClass = classNames({
+      'input-group': true,
+      'has-error': this.state.missingTitle
+    });
+
     return (
       <div className="panel panel-default">
-        <div className="panel-heading"><i className="fa fa-list-ul"></i>&nbsp;TODO</div>
+        <div className="panel-heading"><i className="fa fa-list-ul"></i>&nbsp;TODO <span className={loadingClass}><img src="/loading.gif" /></span></div>
         <div className="panel-body">
-          <div className="input-group">
-            <input type="text" className="form-control" />
+          <div className={inputWrapperClass}>
+            <input type="text" className="form-control" value={this.state.title} onChange={(e) => this.onChangeTitle(e)} />
             <span className="input-group-btn">
-              <button className="btn btn-primary" type="button">ADD</button>
+              <button className="btn btn-primary" type="button" onClick={(e) => this.onClickAddTodo(e)}>ADD</button>
             </span>
           </div>
+          {(() => this.state.missingTitle ? (<div className="error"><i className="fa fa-exclamation-triangle"></i>&nbsp; TODO title is required.</div>) : null)()}
         </div>
-        <ul className="list-group">
-          {this.state.list.map((todoItem) => {
-            return <li className="list-group-item" key={todoItem.id}>{todoItem.title}</li>
-          })}
-        </ul>
+        <TodoList />
       </div>
     );
   }
