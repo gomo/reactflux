@@ -20,7 +20,7 @@ You must implement `initStore` method.
 
 ```es6
 import React from 'react';
-import ReactFlux from '../../../../';
+import ReactFlux from 'reactflux';
 import TodoStore from '../stores/Todo';
 
 export default class Todo extends ReactFlux.BaseComponent
@@ -40,7 +40,7 @@ The second argument of constructor is inital state object.
 
 ```es6
 import Dispatcher from '../AppDispatcher';
-import ReactFlux from '../../../../';
+import ReactFlux from 'reactflux';
 
 class TodoStore extends ReactFlux.BaseStore
 {
@@ -63,7 +63,7 @@ export default new Flux.Dispatcher();
 
 ```es6
 import Dispatcher from '../AppDispatcher';
-import ReactFlux from '../../../../';
+import ReactFlux from 'reactflux';
 import TodoConst from '../constants/TodoConstants';
 
 class TodoActions extends ReactFlux.BaseActions
@@ -102,7 +102,7 @@ doSomething(){
 For make constants object, use `ReactFlux.handlers()`.
 
 ```es6
-import ReactFlux from '../../../../';
+import ReactFlux from 'reactflux';
 
 export default{
   ActionTypes: ReactFlux.handlers([
@@ -121,7 +121,7 @@ If you make `handleBindTodoTitle` method in a store class, the store handle this
 
 ```es6
 import Dispatcher from '../AppDispatcher';
-import ReactFlux from '../../../../';
+import ReactFlux from 'reactflux';
 
 class TodoStore extends ReactFlux.BaseStore
 {
