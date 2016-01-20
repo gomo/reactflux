@@ -12,4 +12,4 @@ npm install
 gulp example
 ```
 
-Access http://localhost:9999/ with your browser.
+Access http://localhost:9999/ with your browser. The documents root dir is `public`.
