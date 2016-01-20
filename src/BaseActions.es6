@@ -1,14 +1,19 @@
+import Defer from './Defer';
+
 export default class BaseActions
 {
   constructor(dispatcher) {
     this.dispatcher = dispatcher;
   }
 
-  dispatch(handler, data, callback){
+  dispatch(handler, data){
+    var defer = new Defer();
     this.dispatcher.dispatch({
       handler: handler,
       data: data,
-      callback: callback
+      defer: defer
     });
+
+    return defer.promise;
   }
 }
