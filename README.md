@@ -114,10 +114,10 @@ export default{
 This make object like this:
 
 ```json
-{"BIND_TODO_TITLE": "handlerBindTodoTitle"}
+{"BIND_TODO_TITLE": "handleBindTodoTitle"}
 ```
 
-`handlerBindTodoTitle` is handler method name in Store object.
+If you make `handleBindTodoTitle` method in a store class, the store handle this event. 
 
 ```es6
 import Dispatcher from '../AppDispatcher';
@@ -131,11 +131,11 @@ class TodoStore extends ReactFlux.BaseStore
     });
   }
 
-  handlerBindTodoTitle(payload){
+  handleBindTodoTitle(payload){
     var title = payload.data.title;
     this.setState({'title', title});
   }
 ```
 
-`handler...` method emit state change event automatically. If you want cancel emit, return `false`.
+`handler...` method emit the state change event automatically. If you want cancel that, return `false`.
 
