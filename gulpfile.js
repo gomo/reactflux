@@ -22,7 +22,7 @@ gulp.task('watch-src', function() {
   gulp.watch('src/*', ['build-src']);
 });
 
-gulp.task('default', ['watch-src']);
+gulp.task('default', ['build-src', 'watch-src']);
 
 //for example
 gulp.task('webserver', function() {
@@ -59,4 +59,4 @@ gulp.task('watch-example', function() {
   gulp.watch(['example/todo/src/*', 'example/todo/src/**/*', 'src/*'], ['build-src', 'build-example']);
 });
 
-gulp.task('example', ['watch-example', 'webserver']);
+gulp.task('example', ['build-src', 'build-example', 'watch-example', 'webserver']);
