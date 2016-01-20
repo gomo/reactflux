@@ -53,6 +53,26 @@ var Controllers = {
           callback();
         });
       });
+    },
+    remove: function(req, res, query, post, callback){
+      loadTodoData(function(data){
+        data = JSON.parse(data);
+        var removeId = post.id;
+        var newList = [];
+        data.list.map(function(item){
+          if(item.id != removeId){
+            newList.push(item);
+          }
+        });
+        data.list = newList;
+
+        var stringData = JSON.stringify(data);
+        saveTodoData(stringData, function(){
+          res.write(stringData, 'utf8', function(){
+            callback();
+          });
+        });
+      });
     }
   }
 }

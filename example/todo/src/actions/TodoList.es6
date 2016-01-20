@@ -38,6 +38,18 @@ class TodoListActions extends ReactFlux.BaseActions
       });
     }
   }
+
+  remove(id){
+    this.dispatch(TodoConst.ActionTypes.SHOW_LOADING);
+    $.ajax({
+      'url': '/todo/remove',
+      'method': "POST",
+      'data': {id: id}
+    }).done((data) => {
+      this.dispatch(TodoConst.ActionTypes.BIND_TODO_LIST, data);
+      this.dispatch(TodoConst.ActionTypes.HIDE_LOADING);
+    });
+  }
 }
 
 export default new TodoListActions()

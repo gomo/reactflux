@@ -11,6 +11,8 @@ export default class Todo extends ReactFlux.BaseComponent
 {
   constructor(props) {
     super(props);
+
+    this.titleKeyDown = undefined;
   }
 
   initStore(){
@@ -27,6 +29,17 @@ export default class Todo extends ReactFlux.BaseComponent
 
   onChangeTitle(e){
     TodoActions.updateTitle(e.target.value);
+  }
+
+  onKeyDownInTitle(e){
+    //for checked japanese IME input
+    this.titleKeyDown = e.keyCode;
+  }
+
+  onKeyUpInTitle(e){
+    if(this.titleKeyDown == e.keyCode && e.keyCode == 13){//enter key
+      TodoListActions.add(TodoStore.getState('title'));
+    }
   }
 
   render(){
@@ -46,7 +59,13 @@ export default class Todo extends ReactFlux.BaseComponent
         <div className="panel-heading"><i className="fa fa-list-ul"></i>&nbsp;TODO <span className={loadingClass}><img src="/loading.gif" /></span></div>
         <div className="panel-body">
           <div className={inputWrapperClass}>
-            <input type="text" className="form-control" value={this.state.title} onChange={(e) => this.onChangeTitle(e)} />
+            <input
+            　type="text"
+              className="form-control"
+              value={this.state.title}
+              onChange={(e) => this.onChangeTitle(e)}
+              onKeyDown={(e) => this.onKeyDownInTitle(e)}
+              onKeyUp={(e) => this.onKeyUpInTitle(e)} />
             <span className="input-group-btn">
               <button className="btn btn-primary" type="button" onClick={(e) => this.onClickAddTodo(e)}>ADD</button>
             </span>
