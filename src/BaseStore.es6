@@ -11,12 +11,14 @@ export default class BaseStore extends Events.EventEmitter
 
       if(this[payload.handler]){
         var ret = this[payload.handler].call(this, payload);
+        // if return `false`, don't emit event.
         if(ret !== false){
-          var foo = this.emit('change', payload.callback);
+          this.emit('change', payload.defer);
+        } else {
+          payload.defer.resolve();
         }
 
-        //handlerで処理が行われたらthis.updatedStateはクリアする
-        //ハンドラー内でreturn falseした時もthis.updatedStateをクリアする
+        //clear updated value
         this.updatedState = {};
       }
     });

@@ -1,7 +1,10 @@
-const gulp = require('gulp');
-const babel = require('gulp-babel');
+var gulp = require('gulp');
+var babel = require('gulp-babel');
+var webserver = require('gulp-webserver');
+var browserify = require('browserify');
+var source = require('vinyl-source-stream');
 
-gulp.task('build', () => {
+gulp.task('build-src', () => {
   return gulp.src('src/*')
     .pipe(babel({
       presets: ['es2015', 'react']
@@ -15,6 +18,45 @@ gulp.task('build', () => {
     .pipe(gulp.dest('lib'));
 });
 
-gulp.task('default', function() {
-  gulp.watch('src/*', ['build']);
+gulp.task('watch-src', function() {
+  gulp.watch('src/*', ['build-src']);
 });
+
+gulp.task('default', ['build-src', 'watch-src']);
+
+//for example
+gulp.task('webserver', function() {
+  gulp.src('example/todo/public')
+    .pipe(webserver({
+      host: 'localhost',
+      port: '9999',
+      middleware: function(req, res, next) {
+        var routerName = './gulp/router';
+        delete require.cache[require.resolve(routerName)];
+
+        var router = require(routerName);
+        router.route(req, res, next);
+      }
+    }));
+});
+
+gulp.task('build-example', function() {
+  browserify('example/todo/src/app.jsx', {
+      debug: true,
+      extensions: ['.jsx', '.es6']
+    })
+    .transform("babelify", {presets: ["es2015", "react"]}).bundle()
+    .on("error", function (err) {
+      console.log('');
+      console.log(err.message);
+      console.log('' + err.codeFrame)
+    })
+    .pipe(source('todo.js'))
+    .pipe(gulp.dest('example/todo/public'));
+});
+
+gulp.task('watch-example', function() {
+  gulp.watch(['example/todo/src/*', 'example/todo/src/**/*', 'src/*'], ['build-src', 'build-example']);
+});
+
+gulp.task('example', ['build-src', 'build-example', 'watch-example', 'webserver']);
