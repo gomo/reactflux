@@ -1,28 +1,7 @@
 var gulp = require('gulp');
-var babel = require('gulp-babel');
 var webserver = require('gulp-webserver');
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
-
-gulp.task('build-src', () => {
-  return gulp.src('src/*')
-    .pipe(babel({
-      presets: ['es2015', 'react']
-    }))
-    .on("error", function (err) {
-      console.log('');
-      console.log(err.message);
-      console.log('' + err.codeFrame);
-      this.emit('end');
-    })
-    .pipe(gulp.dest('lib'));
-});
-
-gulp.task('watch-src', function() {
-  gulp.watch('src/*', ['build-src']);
-});
-
-gulp.task('default', ['build-src', 'watch-src']);
 
 //for example
 gulp.task('webserver', function() {
@@ -45,7 +24,13 @@ gulp.task('build-example', function() {
       debug: true,
       extensions: ['.jsx', '.es6']
     })
-    .transform("babelify", {presets: ["es2015", "react"]}).bundle()
+    // .exclude('react', 'react-dom')
+    // .transform("browserify-replace", {replace: [
+    //   {from: "import React from 'react';", to: ""},
+    //   {from: "import ReactDOM from 'react-dom';", to: ""}
+    // ]})
+    .transform("babelify", {presets: ["es2015", "react"]})
+    .bundle()
     .on("error", function (err) {
       console.log('');
       console.log(err.message);
@@ -56,7 +41,7 @@ gulp.task('build-example', function() {
 });
 
 gulp.task('watch-example', function() {
-  gulp.watch(['example/todo/src/*', 'example/todo/src/**/*', 'src/*'], ['build-src', 'build-example']);
+  gulp.watch(['example/todo/src/*', 'example/todo/src/**/*', 'src/*'], ['build-example']);
 });
 
-gulp.task('example', ['build-src', 'build-example', 'watch-example', 'webserver']);
+gulp.task('example', ['build-example', 'watch-example', 'webserver']);

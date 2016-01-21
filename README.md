@@ -117,7 +117,7 @@ This make object like this:
 {"BIND_TODO_TITLE": "handleBindTodoTitle"}
 ```
 
-If you make `handleBindTodoTitle` method in a store class, the store handle this event. 
+If you make `handleBindTodoTitle` method in a store class, the store handle this event.
 
 ```es6
 import Dispatcher from '../AppDispatcher';
@@ -139,3 +139,53 @@ class TodoStore extends ReactFlux.BaseStore
 
 `handler...` method emit the state change event automatically. If you want cancel that, return `false`.
 
+## TIPS
+
+### Exclude react/react-dom source
+
+If you want exclude react/react-dom source, use `browserify.exclude()` and [browserify-replace](https://www.npmjs.com/package/browserify-replace) transform.
+
+This is gulp task for [sample TODO application](example/todo):
+
+```js
+var browserify = require('browserify');
+var source = require('vinyl-source-stream');
+
+gulp.task('build-example', function() {
+  browserify('example/todo/src/app.jsx', {
+      debug: false,
+      extensions: ['.jsx', '.es6']
+    })
+    .exclude('react', 'react-dom')
+    .transform("browserify-replace", {replace: [
+      {from: "import React from 'react';", to: ""},
+      {from: "import ReactDOM from 'react-dom';", to: ""}
+    ]})
+    .transform("babelify", {presets: ["es2015", "react"]})
+    .bundle()
+    .on("error", function (err) {
+      console.log('');
+      console.log(err.message);
+      console.log('' + err.codeFrame)
+    })
+    .pipe(source('todo.js'))
+    .pipe(gulp.dest('example/todo/public'));
+});
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.6/react.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.6/react-dom.min.js"></script>
+  <script src="todo.js"></script>
+</head>
+<body>
+  <div id="todo-wrapper"></div>
+</body>
+</html>
+```
