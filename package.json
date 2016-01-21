@@ -1,6 +1,6 @@
 {
   "name": "reactflux",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "The base classes for Facebook react/flux.",
   "main": "index.js",
   "private": false,

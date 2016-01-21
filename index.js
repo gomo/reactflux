@@ -1,12 +1,12 @@
 'use strict';
 
-import BaseComponent from './src/BaseComponent';
-import BaseStore from './src/BaseStore';
-import BaseActions from './src/BaseActions';
-import Util from './src/Util';
-import Defer from './src/Defer';
+var BaseComponent = require('./lib/include/BaseComponent').default;
+var BaseStore = require('./lib/include/BaseStore').default;
+var BaseActions = require('./lib/include/BaseActions').default;
+var Util = require('./lib/include/Util').default;
+var Defer = require('./lib/include/Defer').default;
 
-export default {
+module.exports = {
   BaseComponent: BaseComponent,
   BaseStore: BaseStore,
   BaseActions: BaseActions,

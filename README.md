@@ -143,34 +143,24 @@ class TodoStore extends ReactFlux.BaseStore
 
 ### Exclude react/react-dom source
 
-If you want exclude react/react-dom source, use `browserify.exclude()` and [browserify-replace](https://www.npmjs.com/package/browserify-replace) transform.
+If you want exclude react/react-dom source, import `reactflux/exclude-react`.
 
-This is gulp task for [sample TODO application](example/todo):
+```es6
+import Dispatcher from '../AppDispatcher';
+import ReactFlux from 'reactflux/exclude-react';
 
-```js
-var browserify = require('browserify');
-var source = require('vinyl-source-stream');
+class TodoStore extends ReactFlux.BaseStore
+{
+  constructor() {
+    super(Dispatcher, {
+      'title': ''
+    });
+  }
 
-gulp.task('build-example', function() {
-  browserify('example/todo/src/app.jsx', {
-      debug: false,
-      extensions: ['.jsx', '.es6']
-    })
-    .exclude('react', 'react-dom')
-    .transform("browserify-replace", {replace: [
-      {from: "import React from 'react';", to: ""},
-      {from: "import ReactDOM from 'react-dom';", to: ""}
-    ]})
-    .transform("babelify", {presets: ["es2015", "react"]})
-    .bundle()
-    .on("error", function (err) {
-      console.log('');
-      console.log(err.message);
-      console.log('' + err.codeFrame)
-    })
-    .pipe(source('todo.js'))
-    .pipe(gulp.dest('example/todo/public'));
-});
+  handleBindTodoTitle(payload){
+    var title = payload.data.title;
+    this.setState({'title', title});
+  }
 ```
 
 ```html

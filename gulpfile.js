@@ -2,6 +2,39 @@ var gulp = require('gulp');
 var webserver = require('gulp-webserver');
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
+var babel = require('gulp-babel');
+var replace = require('gulp-replace');
+
+function buildSrc(exclude){
+  var task = gulp.src('src/*');
+  var dir = 'lib/include';
+  if(exclude){
+    task
+      .pipe(replace("import React from 'react';", ''))
+      .pipe(replace("import ReactDOM from 'react-dom';", ''));
+
+    dir = 'lib/exclude';
+  }
+
+  task
+    .pipe(babel({
+      presets: ['es2015', 'react']
+    }))
+    .on("error", function (err) {
+      console.log('');
+      console.log(err.message);
+      console.log('' + err.codeFrame);
+      this.emit('end');
+    })
+    .pipe(gulp.dest(dir));
+
+  return task;
+}
+
+gulp.task('build-src', () => {
+  buildSrc(false);
+  buildSrc(true);
+});
 
 //for example
 gulp.task('webserver', function() {
@@ -26,6 +59,7 @@ gulp.task('build-example', function() {
     })
     // .exclude('react', 'react-dom')
     // .transform("browserify-replace", {replace: [
+    //   {from: "import ReactFlux from '../../../../';", to: "import ReactFlux from '../../../../exclude-react';"},
     //   {from: "import React from 'react';", to: ""},
     //   {from: "import ReactDOM from 'react-dom';", to: ""}
     // ]})
@@ -41,7 +75,7 @@ gulp.task('build-example', function() {
 });
 
 gulp.task('watch-example', function() {
-  gulp.watch(['example/todo/src/*', 'example/todo/src/**/*', 'src/*'], ['build-example']);
+  gulp.watch(['example/todo/src/*', 'example/todo/src/**/*', 'src/*'], ['build-src', 'build-example']);
 });
 
-gulp.task('example', ['build-example', 'watch-example', 'webserver']);
+gulp.task('example', ['build-src', 'build-example', 'watch-example', 'webserver']);
