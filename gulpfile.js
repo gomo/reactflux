@@ -1,22 +1,11 @@
 var gulp = require('gulp');
 var webserver = require('gulp-webserver');
-var browserify = require('browserify');
-var source = require('vinyl-source-stream');
 var babel = require('gulp-babel');
-var replace = require('gulp-replace');
+var gutil = require("gulp-util");
+var webpack = require("webpack");
 
-function buildSrc(exclude){
-  var task = gulp.src('src/*');
-  var dir = 'lib/include';
-  if(exclude){
-    task
-      .pipe(replace("import React from 'react';", ''))
-      .pipe(replace("import ReactDOM from 'react-dom';", ''));
-
-    dir = 'lib/exclude';
-  }
-
-  task
+gulp.task('build-src', () => {
+  return gulp.src('src/*')
     .pipe(babel({
       presets: ['es2015', 'react']
     }))
@@ -26,14 +15,7 @@ function buildSrc(exclude){
       console.log('' + err.codeFrame);
       this.emit('end');
     })
-    .pipe(gulp.dest(dir));
-
-  return task;
-}
-
-gulp.task('build-src', () => {
-  buildSrc(false);
-  buildSrc(true);
+    .pipe(gulp.dest('lib'));
 });
 
 //for example
@@ -52,26 +34,14 @@ gulp.task('webserver', function() {
     }));
 });
 
-gulp.task('build-example', function() {
-  browserify('example/todo/src/app.jsx', {
-      debug: true,
-      extensions: ['.jsx', '.es6']
-    })
-    // .exclude('react', 'react-dom')
-    // .transform("browserify-replace", {replace: [
-    //   {from: "import ReactFlux from '../../../../';", to: "import ReactFlux from '../../../../exclude-react';"},
-    //   {from: "import React from 'react';", to: ""},
-    //   {from: "import ReactDOM from 'react-dom';", to: ""}
-    // ]})
-    .transform("babelify", {presets: ["es2015", "react"]})
-    .bundle()
-    .on("error", function (err) {
-      console.log('');
-      console.log(err.message);
-      console.log('' + err.codeFrame)
-    })
-    .pipe(source('todo.js'))
-    .pipe(gulp.dest('example/todo/public'));
+gulp.task('build-example', function(callback) {
+  webpack(require('./example/todo/webpack.config.js'), function(err, stats) {
+    if(err) throw new gutil.PluginError("webpack", err);
+    gutil.log("[webpack]", stats.toString({
+        // output options
+    }));
+    callback();
+  });
 });
 
 gulp.task('watch-example', function() {
