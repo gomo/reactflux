@@ -19946,7 +19946,7 @@
 	  _inherits(BaseStore, _Events$EventEmitter);
 
 	  function BaseStore(dispatcher) {
-	    var defaultState = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	    var initialState = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
 	    _classCallCheck(this, BaseStore);
 
@@ -19970,8 +19970,11 @@
 	        _this.updatedState = {};
 	      }
 	    });
-
-	    _this.state = defaultState;
+	    _this.initialState = {};
+	    for (var key in initialState) {
+	      _this.initialState[key] = initialState[key];
+	    }
+	    _this.state = initialState;
 	    _this.updatedState = {};
 	    return _this;
 	  }
@@ -20016,11 +20019,16 @@
 	      }
 	    }
 	  }, {
+	    key: 'clearState',
+	    value: function clearState() {
+	      this.setState(this.initialState);
+	    }
+	  }, {
 	    key: 'getInitialState',
 	    value: function getInitialState() {
 	      var state = {};
-	      for (var key in this.state) {
-	        state[key] = this.state[key];
+	      for (var key in this.initialState) {
+	        state[key] = this.initialState[key];
 	      }
 	      return state;
 	    }
@@ -20374,6 +20382,9 @@
 	  _createClass(BaseActions, [{
 	    key: 'dispatch',
 	    value: function dispatch(handler, data) {
+	      if (handler === undefined) {
+	        throw new Error('Missing handler. Check your constants');
+	      }
 	      var defer = new _Defer2.default();
 	      this.dispatcher.dispatch({
 	        handler: handler,

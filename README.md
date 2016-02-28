@@ -53,6 +53,8 @@ class TodoStore extends ReactFlux.BaseStore
 
 Use [facebook flux](https://facebook.github.io/flux/) dispatcher for `../AppDispatcher.es6`.
 
+You can get the initial state by `getInitialState` method, and reset to the initial state using `clearState` method.
+
 ```es6
 import Flux from 'flux';
 

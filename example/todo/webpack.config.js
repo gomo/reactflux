@@ -13,6 +13,7 @@ module.exports = {
   //   'react': 'React',
   //   'react-dom': 'ReactDOM'
   // },
+  watch: true,
   module: {
     loaders: [{
       test: /(\.jsx?$|\.es6?$)/,

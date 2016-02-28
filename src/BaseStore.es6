@@ -2,7 +2,7 @@ import Events from 'events';
 
 export default class BaseStore extends Events.EventEmitter
 {
-  constructor(dispatcher, defaultState = {}) {
+  constructor(dispatcher, initialState = {}) {
     super();
     this.dispatchToken = dispatcher.register((payload) => {
       if(!payload.handler){
@@ -22,8 +22,11 @@ export default class BaseStore extends Events.EventEmitter
         this.updatedState = {};
       }
     });
-
-    this.state = defaultState;
+    this.initialState = {};
+    for(var key in initialState){
+      this.initialState[key] = initialState[key];
+    }
+    this.state = initialState;
     this.updatedState = {};
   }
 
@@ -62,10 +65,14 @@ export default class BaseStore extends Events.EventEmitter
     }
   }
 
+  clearState(){
+    this.setState(this.initialState);
+  }
+
   getInitialState(){
     var state = {};
-    for(var key in this.state){
-      state[key] = this.state[key];
+    for(var key in this.initialState){
+      state[key] = this.initialState[key];
     }
     return state;
   }
