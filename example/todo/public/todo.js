@@ -19905,11 +19905,13 @@
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
 	      this.store.addChangeListener(this.storeChangeCallback);
+	      this.store.view = this;
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
 	    value: function componentWillUnmount() {
 	      this.store.removeChangeListener(this.storeChangeCallback);
+	      this.store.view = null;
 	    }
 	  }]);
 
