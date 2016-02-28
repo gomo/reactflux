@@ -20,11 +20,9 @@ export default class BaseComponent extends React.Component
 
   componentWillMount() {
     this.store.addChangeListener(this.storeChangeCallback);
-    this.store.component = this;
   }
 
   componentWillUnmount() {
     this.store.removeChangeListener(this.storeChangeCallback);
-    this.store.component = null;
   }
 }
