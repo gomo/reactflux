@@ -1,5 +1,3 @@
-import Defer from './Defer';
-
 export default class BaseActions
 {
   constructor(dispatcher) {
@@ -10,13 +8,12 @@ export default class BaseActions
     if(handler === undefined){
       throw new Error('Missing handler. Check your constants');
     }
-    var defer = new Defer();
-    this.dispatcher.dispatch({
-      handler: handler,
-      data: data,
-      defer: defer
+    return new Promise((resolve, reject) => {
+      this.dispatcher.dispatch({
+        handler: handler,
+        data: data,
+        promise: {resolve: resolve, reject: reject}
+      });
     });
-
-    return defer.promise;
   }
 }

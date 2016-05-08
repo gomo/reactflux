@@ -7,9 +7,9 @@ export default class BaseComponent extends React.Component
     this.store = this.initStore();
     this.state = this.store.getInitialState();
 
-    this.storeChangeCallback = (defer) => {
+    this.storeChangeCallback = (promise) => {
       this.setState(this.store.bindUpdatedState(), ()=>{
-        defer.resolve();
+        promise.resolve();
       });
     };
   }
