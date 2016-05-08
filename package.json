@@ -1,12 +1,9 @@
 {
   "name": "reactflux",
-  "version": "0.0.13",
+  "version": "0.1.0",
   "description": "The base classes for Facebook react/flux.",
   "main": "index.js",
   "private": false,
-  "scripts": {
-    "test": "mocha ./tests/all.js"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gomo/reactflux.git"

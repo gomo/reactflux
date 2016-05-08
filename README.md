@@ -89,15 +89,17 @@ doSomething(){
   this.dispatch(TodoConst.ActionTypes.OPERATION_1)
     .then(() => this.dispatch(TodoConst.ActionTypes.OPERATION_2))
     .then(() => {
-      var defer = new ReactFlux.Defer();
-      $.ajax({url: '/ajax/update'}).done(() => {
-        this.dispatch(TodoConst.ActionTypes.OPERATION_AJAX).then(() => {defer.resolve()});
+      return new Promise(resolve => {
+        $.ajax({url: '/ajax/update'}).done(() => {
+          this.dispatch(TodoConst.ActionTypes.OPERATION_AJAX).then(() => resolve());
+        });
       });
-      return defer.promise;
     })
     .then(() => this.dispatch(TodoConst.ActionTypes.OPERATION_3));
 }
 ```
+
+reactflux require global `Promise` object. If you want to use on browsers that lack the `Promise`, check out [the polyfill](https://github.com/stefanpenner/es6-promise#readme).
 
 ### Constants
 
