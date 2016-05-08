@@ -41,9 +41,12 @@ gulp.task('build-example', function() {
   });
 });
 
-
 gulp.task('watch-example', function() {
   gulp.watch(['example/todo/src/*', 'example/todo/src/**/*', 'src/*'], ['build-src']);
 });
 
 gulp.task('example', ['build-src', 'watch-example', 'build-example', 'webserver']);
+
+gulp.task('default', function(){
+  gulp.watch(['src/*'], ['build-src']);
+});
