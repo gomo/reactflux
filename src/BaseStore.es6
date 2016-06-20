@@ -13,9 +13,23 @@ export default class BaseStore extends Events.EventEmitter
         var ret = this[payload.handler].call(this, payload);
         // if return `false`, don't emit event.
         if(ret !== false){
-          this.emit('change', payload.promise);
+          // if return promise, emit after resolve
+          if(ret && typeof ret.then === "function"){
+            payload.promise = ret;
+            ret.then(() => {
+              return new Promise(resolve => {
+                this.emit('change', resolve)
+              });
+            });
+          } else {
+            payload.promise = new Promise(resolve => {
+              this.emit('change', resolve);
+            });
+          }
         } else {
-          payload.promise.resolve();
+          payload.promise = new Promise(resolve => {
+            resolve();
+          });
         }
 
         //clear updated value

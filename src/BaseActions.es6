@@ -8,12 +8,16 @@ export default class BaseActions
     if(handler === undefined){
       throw new Error('Missing handler. Check your constants');
     }
-    return new Promise((resolve, reject) => {
-      this.dispatcher.dispatch({
-        handler: handler,
-        data: data,
-        promise: {resolve: resolve, reject: reject}
-      });
-    });
+
+    const payload = {
+      handler: handler,
+      data: data
+    };
+
+    this.dispatcher.dispatch(payload);
+
+    payload.promise.catch(err => console.log(err));
+
+    return payload.promise;
   }
 }

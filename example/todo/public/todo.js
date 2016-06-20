@@ -19679,23 +19679,23 @@
 
 	var _2 = _interopRequireDefault(_);
 
-	var _Todo = __webpack_require__(170);
+	var _Todo = __webpack_require__(166);
 
 	var _Todo2 = _interopRequireDefault(_Todo);
 
-	var _Todo3 = __webpack_require__(175);
+	var _Todo3 = __webpack_require__(171);
 
 	var _Todo4 = _interopRequireDefault(_Todo3);
 
-	var _TodoList = __webpack_require__(177);
+	var _TodoList = __webpack_require__(173);
 
 	var _TodoList2 = _interopRequireDefault(_TodoList);
 
-	var _TodoList3 = __webpack_require__(178);
+	var _TodoList3 = __webpack_require__(174);
 
 	var _TodoList4 = _interopRequireDefault(_TodoList3);
 
-	var _classnames = __webpack_require__(180);
+	var _classnames = __webpack_require__(176);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -19886,9 +19886,9 @@
 	    _this.store = _this.initStore();
 	    _this.state = _this.store.getInitialState();
 
-	    _this.storeChangeCallback = function (promise) {
+	    _this.storeChangeCallback = function (resolve) {
 	      _this.setState(_this.store.bindUpdatedState(), function () {
-	        promise.resolve();
+	        resolve();
 	      });
 	    };
 	    return _this;
@@ -19959,9 +19959,23 @@
 	        var ret = _this[payload.handler].call(_this, payload);
 	        // if return `false`, don't emit event.
 	        if (ret !== false) {
-	          _this.emit('change', payload.promise);
+	          // if return promise, emit after resolve
+	          if (ret && typeof ret.then === "function") {
+	            payload.promise = ret;
+	            ret.then(function () {
+	              return new Promise(function (resolve) {
+	                _this.emit('change', resolve);
+	              });
+	            });
+	          } else {
+	            payload.promise = new Promise(function (resolve) {
+	              _this.emit('change', resolve);
+	            });
+	          }
 	        } else {
-	          payload.promise.resolve();
+	          payload.promise = new Promise(function (resolve) {
+	            resolve();
+	          });
 	        }
 
 	        //clear updated value
@@ -20374,18 +20388,22 @@
 	  _createClass(BaseActions, [{
 	    key: 'dispatch',
 	    value: function dispatch(handler, data) {
-	      var _this = this;
-
 	      if (handler === undefined) {
 	        throw new Error('Missing handler. Check your constants');
 	      }
-	      return new Promise(function (resolve, reject) {
-	        _this.dispatcher.dispatch({
-	          handler: handler,
-	          data: data,
-	          promise: { resolve: resolve, reject: reject }
-	        });
+
+	      var payload = {
+	        handler: handler,
+	        data: data
+	      };
+
+	      this.dispatcher.dispatch(payload);
+
+	      payload.promise.catch(function (err) {
+	        return console.log(err);
 	      });
+
+	      return payload.promise;
 	    }
 	  }]);
 
@@ -20416,11 +20434,7 @@
 	};
 
 /***/ },
-/* 166 */,
-/* 167 */,
-/* 168 */,
-/* 169 */,
-/* 170 */
+/* 166 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20431,7 +20445,7 @@
 	  value: true
 	});
 
-	var _AppDispatcher = __webpack_require__(171);
+	var _AppDispatcher = __webpack_require__(167);
 
 	var _AppDispatcher2 = _interopRequireDefault(_AppDispatcher);
 
@@ -20493,7 +20507,7 @@
 	exports.default = new TodoStore();
 
 /***/ },
-/* 171 */
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20502,7 +20516,7 @@
 	  value: true
 	});
 
-	var _flux = __webpack_require__(172);
+	var _flux = __webpack_require__(168);
 
 	var _flux2 = _interopRequireDefault(_flux);
 
@@ -20511,7 +20525,7 @@
 	exports.default = new _flux2.default.Dispatcher();
 
 /***/ },
-/* 172 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -20523,11 +20537,11 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-	module.exports.Dispatcher = __webpack_require__(173);
+	module.exports.Dispatcher = __webpack_require__(169);
 
 
 /***/ },
-/* 173 */
+/* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -20539,7 +20553,7 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
 	 * @providesModule Dispatcher
-	 * 
+	 *
 	 * @preventMunge
 	 */
 
@@ -20549,7 +20563,7 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var invariant = __webpack_require__(174);
+	var invariant = __webpack_require__(170);
 
 	var _prefix = 'ID_';
 
@@ -20761,10 +20775,11 @@
 	})();
 
 	module.exports = Dispatcher;
+
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 174 */
+/* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -20819,7 +20834,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 175 */
+/* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20830,7 +20845,7 @@
 	  value: true
 	});
 
-	var _AppDispatcher = __webpack_require__(171);
+	var _AppDispatcher = __webpack_require__(167);
 
 	var _AppDispatcher2 = _interopRequireDefault(_AppDispatcher);
 
@@ -20838,7 +20853,7 @@
 
 	var _2 = _interopRequireDefault(_);
 
-	var _TodoConstants = __webpack_require__(176);
+	var _TodoConstants = __webpack_require__(172);
 
 	var _TodoConstants2 = _interopRequireDefault(_TodoConstants);
 
@@ -20872,7 +20887,7 @@
 	exports.default = new TodoActions();
 
 /***/ },
-/* 176 */
+/* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -20892,7 +20907,7 @@
 	};
 
 /***/ },
-/* 177 */
+/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20903,7 +20918,7 @@
 	  value: true
 	});
 
-	var _AppDispatcher = __webpack_require__(171);
+	var _AppDispatcher = __webpack_require__(167);
 
 	var _AppDispatcher2 = _interopRequireDefault(_AppDispatcher);
 
@@ -20911,7 +20926,7 @@
 
 	var _2 = _interopRequireDefault(_);
 
-	var _TodoConstants = __webpack_require__(176);
+	var _TodoConstants = __webpack_require__(172);
 
 	var _TodoConstants2 = _interopRequireDefault(_TodoConstants);
 
@@ -20992,7 +21007,7 @@
 	exports.default = new TodoListActions();
 
 /***/ },
-/* 178 */
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21011,11 +21026,11 @@
 
 	var _2 = _interopRequireDefault(_);
 
-	var _TodoList = __webpack_require__(179);
+	var _TodoList = __webpack_require__(175);
 
 	var _TodoList2 = _interopRequireDefault(_TodoList);
 
-	var _TodoList3 = __webpack_require__(177);
+	var _TodoList3 = __webpack_require__(173);
 
 	var _TodoList4 = _interopRequireDefault(_TodoList3);
 
@@ -21078,7 +21093,7 @@
 	exports.default = Todo;
 
 /***/ },
-/* 179 */
+/* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21089,7 +21104,7 @@
 	  value: true
 	});
 
-	var _AppDispatcher = __webpack_require__(171);
+	var _AppDispatcher = __webpack_require__(167);
 
 	var _AppDispatcher2 = _interopRequireDefault(_AppDispatcher);
 
@@ -21140,7 +21155,7 @@
 	exports.default = new TodoListStore();
 
 /***/ },
-/* 180 */
+/* 176 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
