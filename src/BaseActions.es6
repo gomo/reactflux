@@ -11,13 +11,12 @@ export default class BaseActions
 
     const payload = {
       handler: handler,
-      data: data
+      data: data,
+      promises: []
     };
 
     this.dispatcher.dispatch(payload);
 
-    payload.promise.catch(err => console.log(err));
-
-    return payload.promise;
+    return Promise.all(payload.promises);
   }
 }

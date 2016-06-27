@@ -14,6 +14,7 @@ module.exports = {
   //   'react-dom': 'ReactDOM'
   // },
   watch: true,
+  devtool: "#inline-source-map",
   module: {
     loaders: [{
       test: /(\.jsx?$|\.es6?$)/,

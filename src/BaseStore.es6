@@ -11,25 +11,26 @@ export default class BaseStore extends Events.EventEmitter
 
       if(this[payload.handler]){
         var ret = this[payload.handler].call(this, payload);
+
         // if return `false`, don't emit event.
         if(ret !== false){
           // if return promise, emit after resolve
           if(ret && typeof ret.then === "function"){
-            payload.promise = ret;
+            payload.promises.push(ret);
             ret.then(() => {
               return new Promise(resolve => {
-                this.emit('change', resolve)
+                this.fireChangeEvent(resolve);
               });
             });
           } else {
-            payload.promise = new Promise(resolve => {
-              this.emit('change', resolve);
-            });
+            payload.promises.push(new Promise(resolve => {
+              this.fireChangeEvent(resolve);
+            }));
           }
         } else {
-          payload.promise = new Promise(resolve => {
+          payload.promises.push(new Promise(resolve => {
             resolve();
-          });
+          }));
         }
 
         //clear updated value
@@ -42,6 +43,14 @@ export default class BaseStore extends Events.EventEmitter
     }
     this.state = initialState;
     this.updatedState = {};
+  }
+
+  fireChangeEvent(resolve){
+    if(this.listenerCount('change')){
+      this.emit('change', resolve)
+    } else {
+      resolve();
+    }
   }
 
   addChangeListener(callback) {
